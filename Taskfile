@@ -1,0 +1,47 @@
+function help {
+    echo "$0 <task> <args>"
+    echo "Tasks:"
+    compgen -A function | cat -n
+}
+
+function setup {
+    python3 -m venv .venv
+    install
+    build
+}
+
+function install {
+    source .venv/bin/activate
+    pip install -U -r requirements.txt
+    pip install -U -r requirements-dev.txt
+}
+
+function build {
+    source .venv/bin/activate
+    cd layers
+    mkdir ./python && true
+    pip install -U -r requirements-app.txt -t ./python
+    zip -r deps-layer.zip ./python
+}
+
+function deploy {
+    source .venv/bin/activate
+    install
+    build
+    cdk synth
+    cdk deploy
+}
+
+function clean {
+    rm -rf layers/python/*
+    rm layers/deps-layer.zip
+    rm -rf cdk.out
+}
+
+function reset {
+    clean
+    rm -rf .venv
+}
+
+TIMEFORMAT="Task completed in %3lR"
+time ${@:-help}

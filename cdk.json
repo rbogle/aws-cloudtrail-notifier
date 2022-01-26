@@ -1,0 +1,64 @@
+{
+  "app": "python3 app.py",
+  "watch": {
+    "include": [
+      "**"
+    ],
+    "exclude": [
+      "README.md",
+      "cdk*.json",
+      "requirements*.txt",
+      "source.bat",
+      "**/__init__.py",
+      "python/__pycache__",
+      "tests"
+    ]
+  },
+  "context": {
+    "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": true,
+    "@aws-cdk/core:stackRelativeExports": true,
+    "@aws-cdk/aws-rds:lowercaseDbIdentifier": true,
+    "@aws-cdk/aws-lambda:recognizeVersionProps": true,
+    "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": true,
+    "@aws-cdk-containers/ecs-service-extensions:enableDefaultLogDriver": true,
+    "@aws-cdk/core:target-partitions": [
+      "aws",
+      "aws-cn"
+    ],
+    "environments": {
+        "default": {
+            "interval": 5,
+            "log_level":"INFO",
+            "log_group_name": "your.organization.cloudtrail.logs",
+            "slack_secret_name": "aws_status_slack_webhook",
+            "namespace": "CloudTrail Alert Metrics",
+            "sns": {
+                "name":"CloudTrail-Alerts",
+                "subscribers": [
+                    "cloud-security@example.com"
+                ]
+            },
+            "alerts": [
+                        { 
+                            "name": "BreakGlass-User-Activity",
+                            "pattern": "{$.userIdentity.userName=\"Administrator\"}",
+                            "description": "Triggers when the 'Administrator' user in any account is used",
+                            "threshold": 1
+                        }, 
+                        { 
+                            "name": "Console-Login-By-IAMUser",
+                            "pattern": "{( $.eventName= \"ConsoleLogin\") && ($.userIdentity.type=\"IAMUser\")}",
+                            "description": "Triggers when an IAM user in any account logs into the console",
+                            "threshold": 1
+                        },
+                        { 
+                          "name": "IAMUser-GetKeySession",
+                          "pattern": "{( $.eventName= \"GetSessionToken\") && ($.userIdentity.type=\"IAMUser\")}",
+                          "description": "Triggers when an IAM user in any account starts a session with a key",
+                          "threshold": 1
+                        }
+                ]
+        }
+    }
+  }
+}
