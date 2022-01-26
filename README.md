@@ -1,11 +1,11 @@
 
-# Organizational Cloudtrail Event Notification
+# Cloudtrail Event Notification
 
 This project creates a notification system for cloudtrail events being logged to a cloudwatch log group. 
 
 It does this by creating cloudwatch metric-filters and alarms on patterns in your logs, along with an eventbridge rule to for the state changes of those alarms, and a lambda function which then gathers details of the cloudwatch log entry and sends notification to a Slack Channel and SNS topic of your choosing.
 
-This system can be very effective for monitoring a whole AWS Organization of accounts when utilizing an organization cloudtrail and logging that trail to a cloudwatch log group. Alarm patterns will be matched against events in all the accounts in your organization automatically and send notifications centrally within minutes. 
+This system can be very effective for monitoring a whole **AWS Organization** of accounts when utilizing an organization cloudtrail and logging that trail to a cloudwatch log group. Alarm patterns will be matched against events in all the accounts in your organization automatically and send notifications centrally within minutes. 
 
 ## Prerequisites and Bootstrapping
 
